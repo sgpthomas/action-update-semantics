@@ -1,0 +1,72 @@
+import "cassert" {
+  def assert(cond: bool);
+  def abs(i: double): double;
+  def dbg(i: bit<32>);
+}
+
+def check_arr32(a: double[32], b: double[32]) {
+  for (let i = 0..31) {
+    assert(abs(a[i] - b[i]) < 0.00000000000001);
+  }
+}
+
+def check_arr16(a: double[16], b: double[16]) {
+  for (let i = 0..15) {
+    assert(abs(a[i] - b[i]) < 0.00000000000001);
+  }
+}
+
+
+decl real: double[32];
+decl img: double[32];
+decl real_twid: double[16];
+decl img_twid: double[16];
+
+decl gold_real: double[32];
+decl gold_img: double[32];
+decl gold_real_twid: double[16];
+decl gold_img_twid: double[16];
+
+let span:bit<32> = 32 >> 1;
+let log:bit<32> = 0;
+
+while (span != 0) {
+  let odd = span;
+  while (odd < 32) {
+    // based on baseline software, but check for rewrites
+    decor "#pragma HLS loop_tripcount avg=16"
+    odd := odd | span;
+    let even = odd ^ span;
+    let real_odd = real[odd];
+    let img_odd = img[odd];
+    ---
+    let real_even = real[even];
+    let img_even = img[even];
+    let temp_r = real_even + real_odd;
+    let temp_i = img_even + img_odd;
+    ---
+    real[odd] := real_even - real_odd;
+    img[odd] := img_even - img_odd;
+    ---
+    real[even] := temp_r;
+    img[even] := temp_i;
+    let rootindex = (even << log) & (32 - 1);
+    ---
+    if (rootindex != 0) {
+      let temp = real_twid[rootindex] * real[odd] - img_twid[rootindex] * img[odd];
+      img_odd := img[odd];
+      ---
+      img[odd] := real_twid[rootindex] * img_odd + img_twid[rootindex] * real[odd];
+      ---
+      real[odd] := temp;
+    }
+    odd := odd + 1;
+  }
+  span := span >> 1;
+  log := log + 1;
+}
+---
+check_arr32(real, gold_real);
+check_arr32(img, gold_img);
+check_arr16(real_twid, gold_real_twid);
+check_arr16(img_twid, gold_img_twid);

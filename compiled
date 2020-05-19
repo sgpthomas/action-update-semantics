@@ -1,0 +1,58 @@
+odd = (and (= state4 1) (!= span 0) (= state3 0)) ? span
+odd = (and (= state4 1) (!= span 0) (= state3 1) (< odd 32) (= state2 5)) ? (+ odd 1)
+
+img = (and (= state4 1) (!= span 0) (= state3 1) (< odd 32) (= state2 4) (!= rootindex 0) (= state1 1)) ? (list-set img odd (+ (* (list-ref real_twid rootindex) img_odd) (* (list-ref img_twid rootindex) (list-ref real odd))))
+img = (and (= state4 1) (!= span 0) (= state3 1) (< odd 32) (= state2 3)) ? (list-set img even temp_i)
+img = (and (= state4 1) (!= span 0) (= state3 1) (< odd 32) (= state2 2)) ? (list-set img odd (- img_even img_odd))
+
+img_even = (and (= state4 1) (!= span 0) (= state3 1) (< odd 32) (= state2 1)) ? (list-ref img (^ odd span))
+
+img_odd = (and (= state4 1) (!= span 0) (= state3 1) (< odd 32) (= state2 4) (!= rootindex 0) (= state1 0)) ? (list-ref img odd)
+img_odd = (and (= state4 1) (!= span 0) (= state3 1) (< odd 32) (= state2 0)) ? (list-ref img (|| odd span))
+
+temp = (and (= state4 1) (!= span 0) (= state3 1) (< odd 32) (= state2 4) (!= rootindex 0) (= state1 0)) ? (- (* (list-ref real_twid rootindex) (list-ref real odd)) (* (list-ref img_twid rootindex) (list-ref img odd)))
+
+real = (and (= state4 1) (!= span 0) (= state3 1) (< odd 32) (= state2 4) (!= rootindex 0) (= state1 2)) ? (list-set real odd temp)
+real = (and (= state4 1) (!= span 0) (= state3 1) (< odd 32) (= state2 3)) ? (list-set real even temp_r)
+real = (and (= state4 1) (!= span 0) (= state3 1) (< odd 32) (= state2 2)) ? (list-set real odd (- real_even real_odd))
+real_even = (and (= state4 1) (!= span 0) (= state3 1) (< odd 32) (= state2 1)) ? (list-ref real (^ odd span))
+real_odd = (and (= state4 1) (!= span 0) (= state3 1) (< odd 32) (= state2 0)) ? (list-ref real (|| odd span))
+
+rootindex = (and (= state4 1) (!= span 0) (= state3 1) (< odd 32) (= state2 3)) ? (& (<< even log) (- 32 1))
+
+temp_i = (and (= state4 1) (!= span 0) (= state3 1) (< odd 32) (= state2 2)) ? (+ img_even img_odd)
+temp_r = (and (= state4 1) (!= span 0) (= state3 1) (< odd 32) (= state2 2)) ? (+ real_even real_odd)
+
+even = (and (= state4 1) (!= span 0) (= state3 1) (< odd 32) (= state2 1)) ? (^ odd span)
+
+odd = (and (= state4 1) (!= span 0) (= state3 1) (< odd 32) (= state2 0)) ? (|| odd span)
+
+state1 = (and (= state4 1) (!= span 0) (= state3 1) (< odd 32) (= state2 4) (!= rootindex 0) (= state1 3)) ? 0
+state1 = (and (= state4 1) (!= span 0) (= state3 1) (< odd 32) (= state2 4) (!= rootindex 0) (= state1 0)) ? 1
+state1 = (and (= state4 1) (!= span 0) (= state3 1) (< odd 32) (= state2 4) (!= rootindex 0) (= state1 1)) ? 2
+state1 = (and (= state4 1) (!= span 0) (= state3 1) (< odd 32) (= state2 4) (!= rootindex 0) (= state1 2)) ? 3
+
+state2 = (and (= state4 1) (!= span 0) (= state3 1) (< odd 32) (= state2 6)) ? 0
+state2 = (and (= state4 1) (!= span 0) (= state3 1) (< odd 32) (= state2 0)) ? 1
+state2 = (and (= state4 1) (!= span 0) (= state3 1) (< odd 32) (= state2 1)) ? 2
+state2 = (and (= state4 1) (!= span 0) (= state3 1) (< odd 32) (= state2 2)) ? 3
+state2 = (and (= state4 1) (!= span 0) (= state3 1) (< odd 32) (= state2 3)) ? 4
+state2 = (and (= state4 1) (!= span 0) (= state3 1) (< odd 32) (or (= rootindex 0) (= state1 2)) (= state2 4)) ? 5
+state2 = (and (= state4 1) (!= span 0) (= state3 1) (< odd 32) (= state2 5)) ? 6
+
+state3 = (and (= state4 1) (!= span 0) (= state3 3)) ? 0
+state3 = (and (= state4 1) (!= span 0) (= state3 0)) ? 1
+state3 = (and (= state4 1) (!= span 0) (not (< odd 32)) (= state3 1)) ? 2
+state3 = (and (= state4 1) (!= span 0) (= state3 2)) ? 3
+
+state4 = (= state4 2) ? 0
+state4 = (= state4 0) ? 1
+state4 = (and (not (!= span 0)) (= state4 1)) ? 2
+
+span = (and (= state4 1) (!= span 0) (= state3 2)) ? (> span 1)>
+span = (= state4 0) ? (> 32 1)>
+
+log = (and (= state4 1) (!= span 0) (= state3 2)) ? (+ log 1)
+log = (= state4 0) ? 0
+
+done = (= state4 2) ? 1
